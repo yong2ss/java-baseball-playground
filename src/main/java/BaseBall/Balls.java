@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Balls {
-    private final List<Ball> balls;
+    private final List<Ball> answers;
 
     public Balls(List<Integer> answers) {
-        this.balls = mapBalls(answers);
+        this.answers = mapBalls(answers);
     }
 
     private List<Ball> mapBalls(List<Integer> answers) {
@@ -19,10 +19,20 @@ public class Balls {
     }
 
     public BallStatus play(Ball userBall) {
-        return balls.stream()
+        return answers.stream()
                 .map(answer -> answer.play(userBall))
                 .filter(BallStatus::isNotNothing)
                 .findFirst()
                 .orElse(BallStatus.NOTHING);
+    }
+
+    public PlayResult play(List<Integer> balls) {
+        Balls userBalls = new Balls(balls);
+        PlayResult result = new PlayResult();
+        for (Ball answer : answers) {
+            BallStatus status = userBalls.play(answer);
+            result.report(status);
+        }
+        return result;
     }
 }
